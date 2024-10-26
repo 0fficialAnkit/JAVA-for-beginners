@@ -1,0 +1,1123 @@
+Beginner Level:
+
+ques 1:
+
+import java.util.Scanner;
+import java.util.InputMismatchException;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        int numStudents = scanner.nextInt();
+        int numSubjects = scanner.nextInt();
+
+        String[] studentNames = new String[numStudents];
+        double[][] grades = new double[numStudents][numSubjects];
+
+        for (int i = 0; i < numStudents; i++) {
+            scanner.nextLine(); // To consume the leftover newline
+            studentNames[i] = scanner.nextLine();
+
+            for (int j = 0; j < numSubjects; j++) {
+                double grade;
+                try {
+                    grade = scanner.nextDouble();
+                } catch (InputMismatchException e) {
+                    System.out.println("Invalid grade entered for " + studentNames[i]);
+                    return;
+                }
+
+                if (grade < 0 || grade > 100) {
+                    System.out.println("Invalid grade entered for " + studentNames[i]);
+                    return;
+                } else {
+                    grades[i][j] = grade;
+                }
+            }
+        }
+
+        double highestGrade = Double.MIN_VALUE;
+        double lowestGrade = Double.MAX_VALUE;
+        String highestGradeStudent = "";
+        String lowestGradeStudent = "";
+
+        System.out.println("Average Grades:");
+        for (int i = 0; i < numStudents; i++) {
+            double sum = 0;
+
+            for (int j = 0; j < numSubjects; j++) {
+                sum += grades[i][j];
+
+                if (grades[i][j] > highestGrade) {
+                    highestGrade = grades[i][j];
+                    highestGradeStudent = studentNames[i];
+                }
+
+                if (grades[i][j] < lowestGrade) {
+                    lowestGrade = grades[i][j];
+                    lowestGradeStudent = studentNames[i];
+                }
+            }
+
+            double average = sum / numSubjects;
+            System.out.printf("%s: %.2f\n", studentNames[i], average);
+        }
+
+        // Corrected format specifiers for printing the highest and lowest grades
+        System.out.printf("Highest Grade: %.0f (%s)\n", highestGrade, highestGradeStudent);
+        System.out.printf("Lowest Grade: %.0f (%s)\n", lowestGrade, lowestGradeStudent);
+
+        scanner.close();
+    }
+}
+
+
+
+ques 2:
+
+import java.util.Scanner;
+public class Main {
+    private static final int REGULAR_HOURS = 160;
+    private static final double OVERTIME_MULTIPLIER = 1.5;
+
+    public static double calculateSalary(double hourlyWage, int hoursWorked) {
+        double totalSalary;
+        if (hoursWorked <= REGULAR_HOURS) {
+            totalSalary = hoursWorked * hourlyWage;
+        } else {
+            int overtimeHours = hoursWorked - REGULAR_HOURS;
+            totalSalary = (REGULAR_HOURS * hourlyWage) + (overtimeHours * hourlyWage * OVERTIME_MULTIPLIER);
+        }
+        return totalSalary;
+    }
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int numberOfEmployees = scanner.nextInt();
+        String[] employeeNames = new String[numberOfEmployees];
+        double[] hourlyWages = new double[numberOfEmployees];
+        int[] hoursWorked = new int[numberOfEmployees];
+
+        for (int i = 0; i < numberOfEmployees; i++) {
+            scanner.nextLine();
+            employeeNames[i] = scanner.nextLine();
+            hourlyWages[i] = scanner.nextDouble();
+            hoursWorked[i] = scanner.nextInt();
+        }
+        for (int i = 0; i < numberOfEmployees; i++) {
+            double totalSalary = calculateSalary(hourlyWages[i], hoursWorked[i]);
+            System.out.printf("Total Salary: %.2f%n", totalSalary);
+        }
+        scanner.close();
+    }
+}
+
+
+
+Intermediate Level:
+
+ques 1:
+
+import java.util.Scanner;
+
+class Car {
+    String type;
+
+    // Constructor
+    public Car(String type) {
+        this.type = type;
+    }
+
+    // Method to calculate rental charges for standard car types
+    public double calculateRentalCharges(int days) {
+        double dailyRate;
+
+        switch (type.toLowerCase()) {
+            case "standard":
+                dailyRate = 2000;
+                break;
+            case "suv":
+                dailyRate = 4000;
+                break;
+            default:
+                dailyRate = 2000;
+                break;
+        }
+
+        return dailyRate * days;
+    }
+
+    // Overloaded method to calculate rental charges with additional options
+    public double calculateRentalCharges(int days, String... options) {
+        double baseCharge = calculateRentalCharges(days);
+        double optionsCharge = 0;
+
+        for (String option : options) {
+            switch (option.toLowerCase()) {
+                case "gps":
+                    optionsCharge += 500 * days;
+                    break;
+                case "child seat":
+                    optionsCharge += 200 * days;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return baseCharge + optionsCharge;
+    }
+
+    // Method to display car details and charges
+    public void displayRentalDetails(int days, String... options) {
+        double totalCharges = calculateRentalCharges(days, options);
+        System.out.println(String.format("Total Rental Charges: ₹%.2f", totalCharges));
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Input car details
+        String type = scanner.nextLine().trim();
+
+        // Input number of days
+        int days = scanner.nextInt();
+        scanner.nextLine(); 
+
+        // Check for additional options input (optional)
+        String optionsInput = "";
+        if (scanner.hasNextLine()) {
+            optionsInput = scanner.nextLine().trim();
+        }
+
+        // Parse options if provided
+        String[] options = optionsInput.isEmpty() ? new String[0] : optionsInput.split(",\\s*");
+
+        // Create a Car object and calculate/display rental details
+        Car car = new Car(type);
+        car.displayRentalDetails(days, options);
+
+        scanner.close();
+    }
+}
+
+ques 2:
+
+import java.util.Scanner;
+
+class BankAccount {
+    String accountHolderName;
+    int accountNumber;
+    double balance;
+
+    // Constructor
+    public BankAccount(String accountHolderName, int accountNumber, double initialDeposit) {
+        this.accountHolderName = accountHolderName;
+        this.accountNumber = accountNumber;
+        this.balance = initialDeposit;
+    }
+
+    // Method to display account details
+    public void displayAccountDetails() {
+        System.out.println(String.format("Balance: ₹%.2f", balance));
+    }
+}
+
+class SavingsAccount extends BankAccount {
+    // Constructor
+    public SavingsAccount(String accountHolderName, int accountNumber, double initialDeposit) {
+        super(accountHolderName, accountNumber, initialDeposit);
+    }
+
+    // Additional methods specific to SavingsAccount can be added here
+}
+
+class CurrentAccount extends BankAccount {
+    double overdraftLimit;
+
+    // Constructor
+    public CurrentAccount(String accountHolderName, int accountNumber, double initialDeposit, double overdraftLimit) {
+        super(accountHolderName, accountNumber, initialDeposit);
+        this.overdraftLimit = overdraftLimit;
+    }
+
+    // Method to display account details including overdraft limit
+    @Override
+    public void displayAccountDetails() {
+        super.displayAccountDetails();
+        System.out.println(String.format("Overdraft Limit: ₹%.2f", overdraftLimit));
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        
+        String accountType = scanner.nextLine();
+
+        
+        String accountHolderName = scanner.nextLine();
+
+        
+        int accountNumber = scanner.nextInt();
+
+        
+        double initialDeposit = scanner.nextDouble();
+
+        if (accountType.equalsIgnoreCase("SavingsAccount")) {
+            SavingsAccount savingsAccount = new SavingsAccount(accountHolderName, accountNumber, initialDeposit);
+            System.out.println("Account Created: SavingsAccount for " + savingsAccount.accountHolderName + 
+                               " with Account Number " + savingsAccount.accountNumber);
+            savingsAccount.displayAccountDetails();
+
+        } else if (accountType.equalsIgnoreCase("CurrentAccount")) {
+            double overdraftLimit = scanner.nextDouble();
+
+            CurrentAccount currentAccount = new CurrentAccount(accountHolderName, accountNumber, initialDeposit, overdraftLimit);
+            System.out.println("Account Created: CurrentAccount for " + currentAccount.accountHolderName + 
+                               " with Account Number " + currentAccount.accountNumber);
+            currentAccount.displayAccountDetails();
+
+        } else {
+            System.out.println("Invalid Account Type. Please enter either SavingsAccount or CurrentAccount.");
+        }
+
+        scanner.close();
+    }
+}
+
+
+ques 3:
+
+import java.util.Scanner;
+
+// Enum for product categories
+enum Category {
+    ELECTRONICS, CLOTHING, GROCERIES
+}
+
+// Interface for discountable products
+interface Discountable {
+    double applyDiscount();
+}
+
+// Abstract Product class
+abstract class Product implements Discountable {
+    String name;
+    double price;
+    Category category;
+
+    public Product(String name, double price, Category category) {
+        this.name = name;
+        this.price = price;
+        this.category = category;
+    }
+
+    // Method to display product details
+    public void displayProductDetails() {
+        System.out.println("Product: " + name);
+        System.out.println("Category: " + category);
+        System.out.println(String.format("Original Price: ₹%.2f", price));
+        System.out.println(String.format("Discounted Price: ₹%.2f", applyDiscount()));
+    }
+}
+
+// Electronics class that implements a discount strategy
+class Electronics extends Product {
+    public Electronics(String name, double price) {
+        super(name, price, Category.ELECTRONICS);
+    }
+
+    // 10% discount for electronics
+    @Override
+    public double applyDiscount() {
+        return price * 0.90; // 10% off
+    }
+}
+
+// Clothing class that implements a discount strategy
+class Clothing extends Product {
+    public Clothing(String name, double price) {
+        super(name, price, Category.CLOTHING);
+    }
+
+    // 20% discount for clothing
+    @Override
+    public double applyDiscount() {
+        return price * 0.80; // 20% off
+    }
+}
+
+// Groceries class that implements a discount strategy
+class Groceries extends Product {
+    public Groceries(String name, double price) {
+        super(name, price, Category.GROCERIES);
+    }
+
+    // 5% discount for groceries
+    @Override
+    public double applyDiscount() {
+        return price * 0.95; // 5% off
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Input product details
+        
+        String categoryInput = scanner.nextLine().trim().toUpperCase();
+
+        
+        String productName = scanner.nextLine();
+
+        
+        double productPrice = scanner.nextDouble();
+
+        Product product = null;
+
+        // Create product based on the category
+        switch (Category.valueOf(categoryInput)) {
+            case ELECTRONICS:
+                product = new Electronics(productName, productPrice);
+                break;
+            case CLOTHING:
+                product = new Clothing(productName, productPrice);
+                break;
+            case GROCERIES:
+                product = new Groceries(productName, productPrice);
+                break;
+            default:
+                System.out.println("Invalid category!");
+                break;
+        }
+
+        // If a valid product is created, display its details
+        if (product != null) {
+            product.displayProductDetails();
+        }
+
+        scanner.close();
+    }
+}
+
+
+Advance level
+
+ques 1:
+
+import java.io.*;
+import java.util.Scanner;
+
+public class Main {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        String fileName = scanner.nextLine().trim();
+        try {
+
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            if (choice == 1) {
+                // Writing to file
+                
+                StringBuilder content = new StringBuilder();
+                String line;
+                while (!(line = scanner.nextLine()).equals("END")) {
+                    content.append(line).append("\n");
+                }
+
+                writeFile(fileName, content.toString());
+
+                // Display content without trailing newline
+                String writtenContent = content.toString().trim();
+                System.out.print("Written Content:\n" + writtenContent);
+
+            } else if (choice == 2) {
+                // Reading from file
+                String content = readFile(fileName);
+
+                // Display content without trailing newline
+                String readContent = content.trim();
+                System.out.print("Read Content from File:\n" + readContent);
+
+            } else {
+                System.out.println("Invalid choice. Please select 1 or 2.");
+            }
+
+        } catch (FileNotFoundException e) {
+            System.out.println("Error Message: File not found. Please check the file name and try again.");
+        } catch (IOException e) {
+            System.out.println("Error Message: An I/O error occurred.");
+        } catch (SecurityException e) {
+            System.out.println("Error Message: Access denied. You do not have the necessary permissions.");
+        } finally {
+            scanner.close();
+        }
+    }
+
+    private static void writeFile(String fileName, String content) throws IOException {
+        try (FileWriter fileWriter = new FileWriter(fileName)) {
+            fileWriter.write(content);
+        }
+    }
+
+    private static String readFile(String fileName) throws IOException {
+        StringBuilder content = new StringBuilder();
+        try (FileReader fileReader = new FileReader(fileName);
+             BufferedReader bufferedReader = new BufferedReader(fileReader)) {
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                content.append(line).append("\n");
+            }
+        }
+        return content.toString();
+    }
+}
+
+
+ques 2:
+
+import java.util.Scanner;
+
+public class Main {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        try {
+          
+            String input = scanner.nextLine();
+
+            // Handle edge cases
+            if (input == null || input.isEmpty()) {
+                throw new IllegalArgumentException("Input cannot be null or empty.");
+            }
+
+            // Encrypt and decrypt the string
+            String encrypted = encrypt(input);
+            String decrypted = decrypt(encrypted);
+
+            System.out.println("Encrypted String: " + encrypted);
+            System.out.println("Decrypted String: " + decrypted);
+
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("An unexpected error occurred: " + e.getMessage());
+        } finally {
+            scanner.close();
+        }
+    }
+
+    private static String encrypt(String input) {
+        // Apply Caesar cipher with shift of 3 positions
+        StringBuilder encrypted = new StringBuilder();
+        for (char ch : input.toCharArray()) {
+            if (Character.isLetter(ch)) {
+                char base = Character.isLowerCase(ch) ? 'a' : 'A';
+                encrypted.append((char) ((ch - base + 3) % 26 + base));
+            } else if (Character.isDigit(ch)) {
+                encrypted.append((char) ((ch - '0' + 3) % 10 + '0'));
+            } else {
+                encrypted.append(ch); // For non-alphanumeric characters, no change
+            }
+        }
+
+        // Reverse the encrypted string
+        return encrypted.reverse().toString();
+    }
+
+    private static String decrypt(String encrypted) {
+        // Reverse the string to get the original Caesar cipher result
+        StringBuilder reversed = new StringBuilder(encrypted).reverse();
+
+        // Apply reverse Caesar cipher with shift of 3 positions
+        StringBuilder decrypted = new StringBuilder();
+        for (char ch : reversed.toString().toCharArray()) {
+            if (Character.isLetter(ch)) {
+                char base = Character.isLowerCase(ch) ? 'a' : 'A';
+                decrypted.append((char) ((ch - base - 3 + 26) % 26 + base));
+            } else if (Character.isDigit(ch)) {
+                decrypted.append((char) ((ch - '0' - 3 + 10) % 10 + '0'));
+            } else {
+                decrypted.append(ch); // For non-alphanumeric characters, no change
+            }
+        }
+
+        return decrypted.toString();
+    }
+}
+
+
+ques 3:
+
+import java.io.*;
+import java.util.*;
+import java.util.concurrent.*;
+
+public class Main {
+
+    private static final List<String> errorMessages = Collections.synchronizedList(new ArrayList<>());
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Read the number of files
+        int numFiles = scanner.nextInt();
+        scanner.nextLine(); // Consume the newline
+
+        // Read the filenames
+        String[] fileNames = new String[numFiles];
+        for (int i = 0; i < numFiles; i++) {
+            fileNames[i] = scanner.nextLine();
+        }
+
+        // Determine if contents are provided directly after filenames
+        boolean contentProvidedDirectly = false;
+        List<String> fileContents = new ArrayList<>();
+        for (int i = 0; i < numFiles; i++) {
+            if (scanner.hasNextLine()) {
+                fileContents.add(scanner.nextLine());
+                contentProvidedDirectly = true;
+            }
+        }
+
+        // Create a thread pool with a number of threads equal to the number of input files
+        ExecutorService executor = Executors.newFixedThreadPool(numFiles);
+        List<Future<String>> futures = new ArrayList<>();
+
+        // Submit tasks for each file or simulated content
+        for (int i = 0; i < numFiles; i++) {
+            String fileName = fileNames[i];
+            if (contentProvidedDirectly) {
+                // If content is directly provided, process it as is
+                String content = fileContents.get(i);
+                futures.add(executor.submit(() -> processContent(fileName, content)));
+            } else {
+                // Otherwise, attempt to read content from the file system
+                futures.add(executor.submit(() -> processFile(fileName)));
+            }
+        }
+
+        // Shutdown the executor and wait for all tasks to complete
+        executor.shutdown();
+        try {
+            if (!executor.awaitTermination(1, TimeUnit.MINUTES)) {
+                executor.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            executor.shutdownNow();
+            Thread.currentThread().interrupt(); // Restore interrupted status
+        }
+
+        // Print results and error messages to stdout
+        for (Future<String> future : futures) {
+            try {
+                System.out.println(future.get());
+            } catch (ExecutionException e) {
+                System.out.println("Error processing file: " + e.getCause().getMessage());
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt(); // Restore interrupted status
+                System.out.println("Task was interrupted.");
+            }
+        }
+
+        // Print any error messages
+        if (!errorMessages.isEmpty()) {
+            try (PrintWriter writer = new PrintWriter(new FileWriter("outputError.txt", true))) {
+                for (String errorMessage : errorMessages) {
+                    System.out.println(errorMessage);
+                    writer.println(errorMessage);
+                }
+            } catch (IOException e) {
+                // Print the error for writing issues directly
+                System.out.println("Error writing to outputError.txt: " + e.getMessage());
+            }
+        }
+
+        scanner.close();
+    }
+
+    // Method to process a file, read its content, and count words
+    private static String processFile(String fileName) {
+        try {
+            String content = readFile(fileName);
+            int wordCount = countWords(content);
+            return fileName + ": " + wordCount + " words";
+        } catch (IOException e) {
+            String errorMessage = "Error reading file: " + fileName;
+            errorMessages.add(errorMessage);
+            return errorMessage;
+        } catch (Exception e) {
+            String errorMessage = "Error processing file: " + fileName;
+            errorMessages.add(errorMessage);
+            return errorMessage;
+        }
+    }
+
+    // Method to simulate processing content directly provided
+    private static String processContent(String fileName, String content) {
+        try {
+            int wordCount = countWords(content);
+            return fileName + ": " + wordCount + " words";
+        } catch (Exception e) {
+            errorMessages.add("Error processing content: " + fileName);
+            return "Error processing content: " + fileName;
+        }
+    }
+
+    // Method to read the content of a file
+    private static String readFile(String fileName) throws IOException {
+        StringBuilder content = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                content.append(line).append(" ");
+            }
+        }
+        return content.toString().trim();
+    }
+
+    // Method to count words in the given content
+    private static int countWords(String content) {
+        return content.isEmpty() ? 0 : content.split("\\s+").length;
+    }
+}
+
+
+Expert level
+
+ques 1:
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+class Student {
+    int id;
+    String name;
+    int age;
+    String major;
+
+    public Student(int id, String name, int age, String major) {
+        this.id = id;
+        this.name = name;
+        this.age = age;
+        this.major = major;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("ID: %d, Name: %s, Age: %d, Major: %s", id, name, age, major);
+    }
+}
+
+public class Main {
+    // Static list to maintain state across operations
+    private static List<Student> students = new ArrayList<>();
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Display the menu
+       
+        
+        // Read the user's choice
+        int choice = Integer.parseInt(scanner.nextLine());
+
+        switch (choice) {
+            case 1:
+               
+                String addDetails = scanner.nextLine();
+                String[] addTokens = addDetails.split("\\s+");
+                addStudent(addTokens);
+                break;
+            case 2:
+                
+                String deleteDetails = scanner.nextLine();
+                String[] deleteTokens = deleteDetails.split("\\s+");
+                deleteStudent(deleteTokens);
+                break;
+            case 3:
+                displayStudents();
+                break;
+            default:
+                System.out.println("Invalid choice. Please try again.");
+        }
+
+        scanner.close();
+    }
+
+    private static void addStudent(String[] tokens) {
+        try {
+            // Parse student details from the tokens
+            int id = Integer.parseInt(tokens[0]);
+            String name = tokens[1];
+            int age = Integer.parseInt(tokens[2]);
+            String major = tokens[3];
+
+            // Check if a student with the same ID already exists
+            if (students.stream().anyMatch(student -> student.id == id)) {
+                System.out.println("A student with this ID already exists. Please use a unique ID.");
+                return;
+            }
+
+            // Add student to the list
+            Student student = new Student(id, name, age, major);
+            students.add(student);
+            System.out.println("Student added: " + student);
+        } catch (Exception e) {
+            System.out.println("Error adding student. Please ensure you enter the details in the correct format.");
+        }
+    }
+
+    private static void deleteStudent(String[] tokens) {
+        try {
+            // Parse student ID to delete
+            int id = Integer.parseInt(tokens[0]);
+
+            // Find and remove the student by ID
+            boolean found = students.removeIf(student -> student.id == id);
+
+            if (found) {
+                System.out.println("Student with ID " + id + " is deleted.");
+            } else {
+                System.out.println("Student not found.");
+            }
+        } catch (Exception e) {
+            System.out.println("Error deleting student. Please ensure you enter a valid ID.");
+        }
+    }
+
+    private static void displayStudents() {
+        if (students.isEmpty()) {
+            System.out.println("No students available.");
+        } else {
+            System.out.println("List of students:");
+            for (Student student : students) {
+                System.out.println(student);
+            }
+        }
+    }
+}
+
+ques 2:
+
+import java.util.Scanner;
+
+// The public class should be named Main and match the filename Main.java
+public class Main {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Display the menu to the user
+        int choice = scanner.nextInt();
+
+        if (choice == 1) {
+            // CustomLinkedList operations
+            CustomLinkedList linkedList = new CustomLinkedList();
+
+            for (int i = 0; i < 3; i++) {
+                linkedList.add(scanner.nextInt());
+            }
+            scanner.nextLine(); // Consume newline
+
+            System.out.println("Linked List after additions:");
+            linkedList.display();
+
+            int removeIndex = scanner.nextInt();
+            linkedList.remove(removeIndex);
+
+            System.out.println("Linked List after removal:");
+            linkedList.display();
+
+            int getIndex = scanner.nextInt();
+            System.out.println("Element at index " + getIndex + ": " + linkedList.get(getIndex));
+
+            System.out.println("Size of the LinkedList: " + linkedList.size());
+
+        } else if (choice == 2) {
+            // CustomStack operations
+            CustomStack stack = new CustomStack();
+
+            for (int i = 0; i < 3; i++) {
+                stack.push(scanner.nextInt());
+            }
+
+            System.out.println("Stack after pushes:");
+            stack.display();
+
+            System.out.print("Popped elements: ");
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < 3; i++) {
+                try {
+                    sb.append(stack.pop()).append(" ");
+                } catch (IllegalStateException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+            // Print the result with a trailing space removed
+            System.out.println(sb.toString().trim());
+
+            System.out.println("Stack after pops:");
+            stack.display();
+        } else {
+            System.out.println("Invalid choice.");
+        }
+
+        scanner.close();
+    }
+
+    // Inner class CustomLinkedList
+    static class CustomLinkedList {
+        private Node head;
+        private int size;
+
+        private class Node {
+            int data;
+            Node next;
+
+            Node(int data) {
+                this.data = data;
+                this.next = null;
+            }
+        }
+
+        public CustomLinkedList() {
+            head = null;
+            size = 0;
+        }
+
+        // Add element at the end
+        public void add(int data) {
+            Node newNode = new Node(data);
+            if (head == null) {
+                head = newNode;
+            } else {
+                Node current = head;
+                while (current.next != null) {
+                    current = current.next;
+                }
+                current.next = newNode;
+            }
+            size++;
+        }
+
+        // Remove element at specific index
+        public void remove(int index) {
+            if (index < 0 || index >= size) {
+                System.out.println("Index out of bounds.");
+                return;
+            }
+            if (index == 0) {
+                head = head.next;
+            } else {
+                Node current = head;
+                for (int i = 0; i < index - 1; i++) {
+                    current = current.next;
+                }
+                current.next = current.next.next;
+            }
+            size--;
+        }
+
+        // Get element at specific index
+        public int get(int index) {
+            if (index < 0 || index >= size) {
+                throw new IndexOutOfBoundsException("Index out of bounds.");
+            }
+            Node current = head;
+            for (int i = 0; i < index; i++) {
+                current = current.next;
+            }
+            return current.data;
+        }
+
+        // Get size of the list
+        public int size() {
+            return size;
+        }
+
+        // Display the list
+        public void display() {
+            Node current = head;
+            StringBuilder sb = new StringBuilder();
+            while (current != null) {
+                sb.append(current.data);
+                current = current.next;
+                if (current != null) {
+                    sb.append(" "); // Append space only if there's another node after the current one
+                }
+            }
+            System.out.println(sb.toString());
+        }
+    }
+
+    // Inner class CustomStack
+    static class CustomStack {
+        private CustomLinkedList list;
+
+        public CustomStack() {
+            list = new CustomLinkedList();
+        }
+
+        // Push element onto the stack
+        public void push(int data) {
+            list.add(data);
+        }
+
+        // Pop element from the stack
+        public int pop() {
+            if (list.size() == 0) {
+                throw new IllegalStateException("Stack underflow.");
+            }
+            int data = list.get(list.size() - 1);
+            list.remove(list.size() - 1);
+            return data;
+        }
+
+        // Peek element from the stack
+        public int peek() {
+            if (list.size() == 0) {
+                throw new IllegalStateException("Stack is empty.");
+            }
+            return list.get(list.size() - 1);
+        }
+
+        // Get size of the stack
+        public int size() {
+            return list.size();
+        }
+
+        // Display the stack
+        public void display() {
+            list.display();
+        }
+    }
+}
+
+
+ques 3:
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.TreeMap;
+
+class Book {
+    private int id;
+    private String title;
+    private String author;
+    private int year;
+
+    public Book(int id, String title, String author, int year) {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+        this.year = year;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    @Override
+    public String toString() {
+        return "ID: " + id + ", Title: " + title + ", Author: " + author + ", Year: " + year;
+    }
+}
+
+class Library {
+    private Map<Integer, Book> booksById;
+    private TreeMap<String, Book> booksByTitle;
+
+    public Library() {
+        booksById = new HashMap<>();
+        booksByTitle = new TreeMap<>();
+    }
+
+    public void addBook(Book book) {
+        booksById.put(book.getId(), book);
+        booksByTitle.put(book.getTitle(), book);
+    }
+
+    public void removeBookById(int id) {
+        Book book = booksById.remove(id);
+        if (book != null) {
+            booksByTitle.remove(book.getTitle());
+        }
+    }
+
+    public Book searchById(int id) {
+        return booksById.get(id);
+    }
+
+    public Book searchByTitle(String title) {
+        return booksByTitle.get(title);
+    }
+
+    public void displayBooksSortedByTitle() {
+        for (Map.Entry<String, Book> entry : booksByTitle.entrySet()) {
+            System.out.println(entry.getValue());
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        Library library = new Library();
+
+        // Read the number of books to add
+        int numBooks = Integer.parseInt(scanner.nextLine().trim());
+        
+        // Add books
+        for (int i = 0; i < numBooks; i++) {
+            String[] bookDetails = scanner.nextLine().split(", ");
+            int id = Integer.parseInt(bookDetails[0].split("=")[1].trim());
+            String title = bookDetails[1].split("=")[1].trim();
+            String author = bookDetails[2].split("=")[1].trim();
+            int year = Integer.parseInt(bookDetails[3].split("=")[1].trim());
+            library.addBook(new Book(id, title, author, year));
+        }
+
+        // Display books sorted by title
+        System.out.println("Books sorted by title:");
+        library.displayBooksSortedByTitle();
+
+        // Search books by ID
+        int searchId = Integer.parseInt(scanner.nextLine().trim());
+        System.out.println("Search ID " + searchId + ":");
+        System.out.println(library.searchById(searchId));
+
+        // Remove a book by ID
+        int removeId = Integer.parseInt(scanner.nextLine().trim());
+        library.removeBookById(removeId);
+        System.out.println("Removed book with ID " + removeId);
+
+        // Display books sorted by title again
+        System.out.println("Books sorted by title after removal:");
+        library.displayBooksSortedByTitle();
+
+        scanner.close();
+    }
+}
